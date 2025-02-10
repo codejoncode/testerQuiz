@@ -1,6 +1,6 @@
 import React from "react";
 import SignImage from "./SignImage.tsx";
-import YIELD from './SignPictures/YIELD.jpg';
+
 
 interface QuestionProps {
     title: string; 
@@ -9,12 +9,9 @@ interface QuestionProps {
 }
 
 const Question = (card: QuestionProps) => {
-  const ADDEDLANE = "/src/SignPictures/ADDEDLANE.jpg";
-  const picture = "src/SignPictures/ADDEDLANE.jpg";
+  console.log(card.imagePath)
   return (
     <div className="cardContainer">
-      <img alt="telephone" src="\src\SignPictures\TELEPHONE.jpg" />
-      <img alt="restare" src={picture} />
       <div>
         {!card.isImage ? (
           <p>{card.title}</p>

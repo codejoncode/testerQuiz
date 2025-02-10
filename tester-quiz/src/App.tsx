@@ -43,6 +43,7 @@ function App() {
   const [currentQuestion, setCurrentQuestion] =
     useState<QuestionData>(sampleQuestion);
   const [questions, setQuestions] = useState<QuestionData[]>([sampleQuestion]);
+  const [isTestComplete, setIsTestComplete] = useState<boolean>(false);
 
   /**
    * Will put the correct answer in an array along with three random answers.
@@ -97,11 +98,11 @@ function App() {
   //takes in an array of objects
   const buildOutQuestionsWithSigns = (data: any) => {
     const newQuestions: QuestionData[] = [];
-    const answers = data.map((d) => d.answer);
-    data.forEach((d) => {
+    const answers = data.map((d: { answer: any; }) => d.answer);
+    data.forEach((d: QuestionData) => {
       const newData: QuestionData = {
-        selections: generateRandomSelections(d.answer, answers),
         ...d,
+        selections: generateRandomSelections(d.answer, answers),
       };
       newQuestions.push(newData);
     });
@@ -117,13 +118,14 @@ function App() {
       buildOutQuestionsWithoutSigns(questionData);
     const questionsWithImages = buildOutQuestionsWithSigns(signDataWithImages);
     const combinedQuestions: QuestionData[] = [
-      // ...regularQuestionsWithoutImages,
+      ...regularQuestionsWithoutImages,
       ...questionsWithImages,
     ];
     if (combinedQuestions.length) {
       setQuestions([...combinedQuestions]);
     } else {
       // throw some error what is going on? 
+      // log the issue the questionData and signDataWithImages for bug hunting
     }
     setCurrentQuestion(combinedQuestions[0]);
     setRedos(0);
@@ -131,7 +133,7 @@ function App() {
     setCorrect(0);
     setTotal(0);
     setIsQuestionsLoaded(true);
-    // setIndex(0);
+    setIsTestComplete(false);
   };
 
   const newQuestionLoad = (isCorrect: boolean) => {
@@ -181,7 +183,13 @@ function App() {
     if(isUpdateExpected) {
       const questionArray = [...questions];
       setQuestions(questionArray);
-      setCurrentQuestion(questionArray[0]);
+      // check if there is questions left befroe setting it
+      if (questionArray.length) {
+        setCurrentQuestion(questionArray[0]);
+      } else {
+        setIsTestComplete(true);
+      }
+      // set to default or trigger a way to show the test is over
       setisUpdateExpected(false);
     }
   }, [questions, setQuestions, isUpdateExpected]);
@@ -202,18 +210,20 @@ function App() {
           correct={correct}
           redos={redos}
         />
-        <Question
-          title={currentQuestion.title}
-          imagePath={currentQuestion.imagePath}
-          isImage={currentQuestion.isImage}
-        />
-        <AnswerBox
-          selectionOne={currentQuestion.selections[0]}
-          selectionTwo={currentQuestion.selections[1]}
-          selectionThree={currentQuestion.selections[2]}
-          selectionFour={currentQuestion.selections[3]}
-        />
-        <AnswerSelection handleClick={compareSelction} />
+        {!isTestComplete ? <div>
+          <Question
+            title={currentQuestion.title}
+            imagePath={currentQuestion.imagePath}
+            isImage={currentQuestion.isImage}
+          />
+          <AnswerBox
+            selectionOne={currentQuestion.selections[0]}
+            selectionTwo={currentQuestion.selections[1]}
+            selectionThree={currentQuestion.selections[2]}
+            selectionFour={currentQuestion.selections[3]}
+          />
+          <AnswerSelection handleClick={compareSelction} />
+        </div>: <div>YOU COMPLETED THE TEST</div>}
       </div>
     </div>
   );

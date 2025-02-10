@@ -38,7 +38,7 @@ import FALLENROCK from "./SignPictures/FALLENROCK.jpg";
 import FARMMACHINERY from "./SignPictures/FARMMACHINERY.jpg";
 import FIRESTATION from "./SignPictures/FIRESTATION.jpg";
 import FLAGGERAHEAD from "./SignPictures/FLAGGERAHEAD.jpg";
-import FOOD from "./SignPictures/FLAGGERAHEAD.jpg";
+import FOOD from "./SignPictures/FOOD.jpg";
 import FUEL from "./SignPictures/FUEL.jpg";
 import GROOVEDPAVEMENT from "./SignPictures/GROOVEDPAVEMENT.jpg";
 import GUIDEDSIGN from "./SignPictures/GUIDESIGN.jpg";
@@ -944,7 +944,7 @@ const signData = [
     title: "Two-Way Traffic",
     imagePath: TWOWAYTRAFFIC,
     answer:
-      "Lanes travel in two different directions. Drivers should keep to the right and be alert to oncoming traffic. 944",
+      "Lanes travel in two different directions. Drivers should keep to the right and be alert to oncoming traffic.",
   },
   {
     title: "U.S. Route",
@@ -967,12 +967,6 @@ const signData = [
     imagePath: DIVIDEDHIGHWAYENDS,
     answer:
       "The divided highway ends ahead. Drivers should keep to the right and be alert to oncoming traffic.",
-  },
-  {
-    title: "Wildlife Viewing Area",
-    imagePath: WILDLIFEVIEWINGAREA,
-    answer:
-      "The location indicated on the recreation sign has a wildlife viewing area available for drivers leaving the highway.",
   },
   {
     title: "Wildlife Viewing Area",
