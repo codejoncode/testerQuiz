@@ -8,6 +8,8 @@ interface ScoreBoxProps {
 }
 
 const ScoreBox = (data: ScoreBoxProps) => {
+  const percentage = Math.round(((data.correct / data.total) * 100));
+  const percentageClassName = percentage < 85 ? "ScoreBoxDataPercentageFail" : "ScoreBoxDataPercentagePass";
   return (
     <div className="ScoreBoxContainer">
       <table>
@@ -15,14 +17,13 @@ const ScoreBox = (data: ScoreBoxProps) => {
           <th>Total</th>
           <th>Incorrect</th>
           <th>Correct</th>
-          <th></th>
-          <th>Redo's</th>
+          <th>Grade</th>
         </tr>
         <tr>
-          <td>{data.total}</td>
-          <td>{data.incorrect}</td>
-          <td>{data.correct}</td>
-          <td>{data.redos}</td>
+          <td className="ScoreBoxData">{data.total}</td>
+          <td className="ScoreBoxData">{data.incorrect}</td>
+          <td className="ScoreBoxData">{data.correct}</td>
+          <td className={`ScoreBoxData ${percentageClassName}`}>{data.total ? percentage: 0}%</td>
         </tr>
       </table>
     </div>

@@ -3,7 +3,7 @@ import "./App.css";
 import ScoreBox from "./ScoreBox.tsx";
 import questionData from "./questionData.tsx";
 import signDataWithImages from "./signDataWithImages.tsx";
-import Card from "./Card.tsx";
+import Question from "./Question.tsx";
 import AnswerBox from "./AnswerBox.tsx";
 import AnswerSelection from "./AnswerSelection.tsx";
 
@@ -40,15 +40,10 @@ function App() {
   const [incorrect, setIncorrect] = useState<number>(0);
   const [correct, setCorrect] = useState<number>(0);
   const [redos, setRedos] = useState<number>(0);
-  // const [correctAnswer, setCorrectAnswer] = useState<number>(0);
   const [currentQuestion, setCurrentQuestion] =
     useState<QuestionData>(sampleQuestion);
   const [questions, setQuestions] = useState<QuestionData[]>([sampleQuestion]);
-  // const [index, setIndex] = useState<number>(0);
 
-  // should be the keys from cardData and produce an array of strings;
-  // const cardKeys = Object.keys(cardData);
-  // const randomChoices = [...cardKeys].sort(() => Math.random() - 0.5);
   /**
    * Will put the correct answer in an array along with three random answers.
    * Will shuffle the cards and pull three random non matching to the answer strings.
@@ -62,34 +57,20 @@ function App() {
     answer: string,
     randomAnswers: Array<string>
   ) => {
-    // console.log(randomAnswers);
-    // console.log(typeof randomAnswers);
     const selections: string[] = [];
     if (randomAnswers && answer) {
-      // console.log('randomAnswers and answer good');
       selections.push(answer);
       const randomChoices = [...randomAnswers].sort(() => Math.random() - 0.5);
       while (selections.length < 4) {
-        // console.log(`Logging the looper selections length at ${selections.length}`);
         const randomSelection = Math.floor(
           Math.random() * randomChoices.length
         );
         const selection = randomChoices[randomSelection];
         if (selections.includes(selection) === false) {
-          // console.log("adding selection");
           selections.push(selection);
         }
       }
     }
-    // console.log("selections");
-    // console.log(selections);
-    // const findAnswerIndex = () => {
-    //   return selections.findIndex((x, i) => {
-    //     return x === answer ? i : -1;
-    //   });
-    // };
-
-    // setCorrectAnswer(findAnswerIndex()); // move this inside of the function.
     if(selections.length === 0) {
       return ["Something went wrong","Something went wrong","Something went wrong","Something went wrong"]
     }
@@ -99,15 +80,13 @@ function App() {
   //takes in a object
   const buildOutQuestionsWithoutSigns = (data: any) => {
     const newQuestions: QuestionData[] = [];
-    const keys = Object.keys(data);
-    // console.log("data so the generate random selections can be used");
-    // console.log(data);
-    keys.forEach((key) => {
+    const answers = Object.keys(data).map(x => data[x].answer);
+    answers.forEach((key) => {
       if (data[key]) {
         const newData: QuestionData = {
           title: key,
           imagePath: "",
-          selections: generateRandomSelections(data[key].answer, keys),
+          selections: generateRandomSelections(data[key].answer, answers),
           ...data[key],
         };
         newQuestions.push(newData);
@@ -118,12 +97,10 @@ function App() {
   //takes in an array of objects
   const buildOutQuestionsWithSigns = (data: any) => {
     const newQuestions: QuestionData[] = [];
-    const keys = data.forEach((d) => d.answer);
-    // console.log("data so the generate random selections can be used");
-    // console.log(data);
+    const answers = data.map((d) => d.answer);
     data.forEach((d) => {
       const newData: QuestionData = {
-        selections: generateRandomSelections(d.answer, keys),
+        selections: generateRandomSelections(d.answer, answers),
         ...d,
       };
       newQuestions.push(newData);
@@ -140,7 +117,7 @@ function App() {
       buildOutQuestionsWithoutSigns(questionData);
     const questionsWithImages = buildOutQuestionsWithSigns(signDataWithImages);
     const combinedQuestions: QuestionData[] = [
-      ...regularQuestionsWithoutImages,
+      // ...regularQuestionsWithoutImages,
       ...questionsWithImages,
     ];
     if (combinedQuestions.length) {
@@ -173,13 +150,6 @@ function App() {
   };
 
   const compareSelction: HandleClick = (selection: number) => {
-    // useEffect(() => {
-    //   const interval = setInterval(() => {
-    //     setSeconds(seconds => seconds + 1);
-    //   }, 1000);
-  
-    //   return () => clearInterval(interval);
-    // }, []);
     // compare selection to correct answer
     const answer: string = currentQuestion?.answer ?? "";
     const selections = currentQuestion?.selections ?? [];
@@ -206,7 +176,6 @@ function App() {
     //update totals
     // could show a modal of explanation correct or incorrect later down the road.
   };
-  // console.log(`currentQuestion = ${currentQuestion}`);
 
   useEffect(() => {
     if(isUpdateExpected) {
@@ -216,15 +185,16 @@ function App() {
       setisUpdateExpected(false);
     }
   }, [questions, setQuestions, isUpdateExpected]);
-  
+
+  const startButtonText = isQuestionsLoaded ? "Click to reload questions and start over" : "Click to Load questions and start studying";
   return (
     <div className="App">
       <header className="App-header">
         Indiana State drivers written exam practice
       </header>
-      <div>
-        <button className="loadQuestionsButton" onClick={() => loadQuestions()}>
-          Load questions and start studying
+      <div className="AppQuestionContainer">
+        <button className="LoadQuestionsButton" onClick={() => loadQuestions()}>
+          {startButtonText}
         </button>
         <ScoreBox
           total={total}
@@ -232,7 +202,7 @@ function App() {
           correct={correct}
           redos={redos}
         />
-        <Card
+        <Question
           title={currentQuestion.title}
           imagePath={currentQuestion.imagePath}
           isImage={currentQuestion.isImage}
